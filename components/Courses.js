@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 export default function Courses() {
   const router = useRouter();
@@ -11,7 +12,7 @@ export default function Courses() {
 
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterOption, setFilterOption] = useState("newest"); // Added state for filter option
+  const [filterOption, setFilterOption] = useState("newest");
 
   const courses = [
     {
@@ -64,7 +65,6 @@ export default function Courses() {
     course.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Apply sorting based on filter option
   const sortedCourses = [...filteredCourses].sort((a, b) => {
     if (filterOption === "newest") {
       return b.id - a.id;
@@ -76,6 +76,14 @@ export default function Courses() {
   });
 
   return (
+    <>
+    <Head>
+        <title>S T O I C | Courses</title>
+        <meta name="description" content="Stoic Education Platform" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+    </Head>
+    
     <div className="flex flex-col h-screen p-10">
       <div className="flex gap-2">
         <div className="bg-[#1C1C1C] flex justify-center items-center h-fit w-full p-3 rounded-xl">
@@ -107,9 +115,8 @@ export default function Courses() {
           <div className="my-10 flex flex-wrap gap-5">
             {sortedCourses.length > 0 ? (
               sortedCourses.map((course) => (
-                <div className="bg-[#1C1C1C] w-[280px] p-4 rounded-2xl transition-all hover:scale-110">
+                <div className="bg-[#1C1C1C] w-[280px] p-4 rounded-2xl transition-all hover:scale-110" key={course.id}>
                   <Link
-                    key={course.id}
                     href={`/course?courseId=${course.id}&title=${encodeURIComponent(
                       course.title
                     )}&description=${encodeURIComponent(course.description)}`}
@@ -128,7 +135,7 @@ export default function Courses() {
                 </div>
               ))
             ) : (
-              <div className="bg-[#1C1C1C] p-4 rounded-xl flex justify-center items-center">
+              <div className="bg-[#1C1C1C] p-4 rounded-xl flex justify-center items-center" key="no-results">
                 No results for your search.
               </div>
             )}
@@ -136,5 +143,6 @@ export default function Courses() {
         )}
       </div>
     </div>
+    </>
   );
 }
